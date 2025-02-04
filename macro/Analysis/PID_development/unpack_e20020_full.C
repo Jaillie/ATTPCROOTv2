@@ -97,7 +97,7 @@ void unpack_e20020_full(TString fileName = "run_0053")
    auto numEvents = unpackTask->GetNumEvents();
    std::cout << "Unpacking " << numEvents << " events. " << std::endl;
 
-   run->Run(0, 20);
+   run->Run(0, 1000);
    //run->Run(0, numEvents);
 
    std::cout << std::endl << std::endl;
