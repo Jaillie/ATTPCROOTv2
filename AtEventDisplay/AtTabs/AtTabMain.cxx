@@ -251,6 +251,7 @@ void AtTabMain::UpdatePatternEventElements()
       auto projection = tracks[i].GetPattern()->GetPadPlaneProjection();
       if (projection != nullptr) {
          projection->SetLineColor(GetTrackColor(i));
+         projection->SetLineWidth(2);
          projection->SetFillStyle(0);
          if (fDrawProjection) {
             fCvsPadPlane->cd();

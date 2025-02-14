@@ -69,7 +69,6 @@ void run_eve(TString InputDataFileName = "run_0052")
    auto tabMain = std::make_unique<AtTabMain>();
    tabMain->SetMultiHit(100); // Set the maximum number of multihits in the visualization
    tabMain->SetDrawProjection(true);
-
    eveMan->AddTab(std::move(tabMain));
 
    eveMan->AddTask(praTask);
