@@ -7,7 +7,8 @@
 #include <Rtypes.h>  // for Double_t, Float_t, Int_t, THashConsistencyHolder
 #include <TObject.h> // for TObject
 
-#include <algorithm> // for max
+#include <algorithm>  // for max
+#include <functional> // for function
 #include <memory>
 #include <type_traits> // for false_type, is_signed, true_type
 #include <vector>      // for vector
@@ -31,6 +32,7 @@ namespace AtPATTERN {
  */
 class AtPRA : public TObject {
 protected:
+   using HitVector = std::vector<const AtHit *>;
    std::vector<AtTrack> fTrackCand; //< Candidate tracks
 
    AtDigiPar *fPar; ///< parameter container
@@ -47,6 +49,9 @@ protected:
    std::unique_ptr<AtTools::AtTrackTransformer> fTrackTransformer{std::make_unique<AtTools::AtTrackTransformer>()};
    Double_t fClusterRadius{0};   //<! Radius of hit clusters
    Double_t fClusterDistance{0}; //<! Distance between hit clusters
+   std::function<HitVector(const HitVector &)> fPruneHitsForFit = [](const HitVector &hits) {
+      return hits;
+   }; //<! Function to select which hits to include in circle fit
 
 public:
    virtual ~AtPRA() = default;
@@ -64,10 +69,14 @@ public:
    void SetPrunning() { kSetPrunning = kTRUE; }
    void SetClusterRadius(Double_t clusterRadius) { fClusterRadius = clusterRadius; }
    void SetClusterDistance(Double_t clusterDistance) { fClusterDistance = clusterDistance; }
+   void SetPruneHitsForFit(std::function<HitVector(const HitVector &)> pruneHitsForFit)
+   {
+      fPruneHitsForFit = pruneHitsForFit;
+   }
 
    virtual std::unique_ptr<AtPatternEvent> FindTracks(AtEvent &event) = 0;
 
-   void PruneTrack(AtTrack &track);
+   void PruneTrack(AtTrack &track); /// Prune track of outliers using a kNN algorithm
    bool kNN(const std::vector<std::unique_ptr<AtHit>> &hits, AtHit &hit, int k);
 
 protected:

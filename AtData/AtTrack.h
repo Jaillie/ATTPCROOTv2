@@ -120,6 +120,7 @@ public:
    static Double_t GetLinearRange(const XYZPoint &vertex, const XYZPoint &maxPos);
 
    void SortHitArrayTime();
+   void SortHitArrayReverse();
    void SortClusterHitArrayZ();
 
 protected:
