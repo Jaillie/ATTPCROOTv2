@@ -55,12 +55,14 @@ std::cout << " Processing track with " << track.GetHitArray().size() << " points
 
    if (!circularTracks.empty()) {
 
+      circularTracks.at(0).SortHitArrayTime();
       auto &hits = circularTracks.at(0).GetHitArray();
 
-      // auto circle = dynamic_cast<const AtPatterns::AtPatternCircle2D *>(circularTracks.at(0).GetPattern());
+      // Get the hits to include in the fit
+      auto hitsToFit = fPruneHitsForFit(ContainerManip::GetConstPointerVector(hits));
 
       auto circle = std::make_unique<AtPatterns::AtPatternCircle2D>();
-      circle->AtPattern::FitPattern(ContainerManip::GetConstPointerVector(track.GetHitArray()));
+      circle->AtPattern::FitPattern(hitsToFit);
 
       auto center = circle->GetCenter();
       auto radius = circle->GetRadius();

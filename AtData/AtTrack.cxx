@@ -121,6 +121,10 @@ void AtTrack::SortHitArrayTime()
    std::sort(fHitArray.begin(), fHitArray.end(), AtHit::SortHitTimePtr);
 }
 
+void AtTrack::SortHitArrayReverse()
+{
+   std::sort(fHitArray.rbegin(), fHitArray.rend(), AtHit::SortHitTimePtr);
+}
 void AtTrack::SortClusterHitArrayZ()
 {
 

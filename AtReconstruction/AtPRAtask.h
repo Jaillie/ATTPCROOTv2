@@ -63,6 +63,7 @@ private:
    Double_t fClusterDistance{5.5};
 
 public:
+   AtPRAtask(AtPATTERN::AtPRA *PRA);
    AtPRAtask();
    ~AtPRAtask();
 
@@ -71,7 +72,7 @@ public:
    virtual void SetParContainers();
    virtual void Finish();
 
-   void SetInputBranch(TString branchName) { fInputBranchName = std::move(branchName); }
+      void SetInputBranch(TString branchName) { fInputBranchName = std::move(branchName); }
    void SetOutputBranch(TString branchName) { fOutputBranchName = std::move(branchName); }
 
    void SetPersistence(Bool_t value = kTRUE);
