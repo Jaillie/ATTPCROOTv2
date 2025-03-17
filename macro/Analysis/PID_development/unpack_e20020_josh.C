@@ -5,23 +5,60 @@ bool reduceFunc(AtRawEvent *evt)
 
 std::vector<const AtHit *> SelectHitsForFit(const std::vector<const AtHit *> &hits)
 {
-   // Example function to only take the first 50 hits
-   int maxHits = 50;
+
+   std::vector<const AtHit *> hits2;
+   for (auto hit : hits)
+      hits2.push_back(hit);
+
+   auto sort_func = [](const AtHit *A, const AtHit *B) { return (*A).GetPosition().Z() > (*B).GetPosition().Z(); };
+   std::sort(hits2.begin(), hits2.end(), sort_func);
+
+   // define your radius 'r' in mm
+   double radius = 200.0;
+   int maxHits = 0;
+   int minpoints = 250;
+   
+   // pick the first point as the circle's center
+   double xCenter = hits2[0]->GetPosition().X();
+   double yCenter = hits2[0]->GetPosition().Y();
+
+   for (int i = 0; i < hits.size(); i++) {
+
+      //Reuse x & y from rad fit
+      double x = hits2.at(i)->GetPosition().X();
+      double y = hits2.at(i)->GetPosition().Y();
+
+      // Shift by the first point of the track (new center)
+      double dx = x - xCenter;
+      double dy = y - yCenter;
+
+      double distr = (dx * dx) + (dy * dy);
+      if (distr < radius * radius) {
+         ++maxHits;
+
+      } else
+         break;
+   }
+   if (maxHits < minpoints) {
+      maxHits = minpoints;
+   }
    if (hits.size() < maxHits)
       maxHits = hits.size();
 
    // Copy all hits to the new vector and return that vector.
    std::vector<const AtHit *> hitsToFit;
    for (int i = 0; i < maxHits; i++) {
-      hitsToFit.push_back(hits.at(i));
-      std::cout << "Including hit " << i << " at rho = " << hits.at(i)->GetPosition().Rho()
-                << " and z = " << hits.at(i)->GetPosition().Z() << std::endl;
+      hitsToFit.push_back(hits2.at(i));
+      std::cout << "Including hit " << i << " at rho = " << hits2.at(i)->GetPosition().Rho()
+                << " and z = " << hits2.at(i)->GetPosition().Z() << std::endl;
    }
+
 
    return hitsToFit;
 }
 
-void unpack_e20020_full(TString fileName = "run_0052")
+
+void unpack_e20020_josh(TString fileName = "run_0053")
 {
    // Load the library for unpacking and reconstruction
    gSystem->Load("libAtReconstruction.so");
@@ -31,7 +68,7 @@ void unpack_e20020_full(TString fileName = "run_0052")
 
    TString parameterFile = "ATTPC.e20020.par";
    TString mappath = "";
-   TString filepath = "/home/adam/data/e20020/h5/";
+   TString filepath = "/home/adam/fission/data/e20020/h5/";
    TString fileExt = ".h5";
    TString inputFile = filepath + fileName + fileExt;
    TString scriptfile = "e12014_pad_mapping.xml";
@@ -119,8 +156,8 @@ void unpack_e20020_full(TString fileName = "run_0052")
    auto numEvents = unpackTask->GetNumEvents();
    std::cout << "Unpacking " << numEvents << " events. " << std::endl;
 
-   run->Run(0, 50);
-   // run->Run(0, numEvents);
+   //run->Run(0, 5);
+   run->Run(0, 3500);
 
    std::cout << std::endl << std::endl;
    std::cout << "Done unpacking events" << std::endl << std::endl;

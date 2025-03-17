@@ -29,7 +29,7 @@ std::vector<const AtHit *> xpfit(const std::vector<const AtHit *> &hits)
 
    // define the percent you want fitted
    double xpercent = hits.size() * 0.35;
-   int minpoints = 75;
+   int minpoints = 250;
    if (xpercent < minpoints)
       xpercent = minpoints;
 
@@ -63,7 +63,7 @@ std::vector<const AtHit *> radfit(const std::vector<const AtHit *> &hits)
    // define your radius 'r' in mm
    double radius = 200.0;
    int maxHits = 0;
-   int minpoints = 75;
+   int minpoints = 250;
    for (int i = 0; i < hits.size(); i++) {
       double x = hits2.at(i)->GetPosition().X();
       double y = hits2.at(i)->GetPosition().Y();
@@ -106,7 +106,7 @@ std::vector<const AtHit *> pointtrackfit(const std::vector<const AtHit *> &hits)
    // define your radius 'r' in mm
    double radius = 200.0;
    int maxHits = 0;
-   int minpoints = 75;
+   int minpoints = 250;
    
    // pick the first point as the circle's center
    double xCenter = hits2[0]->GetPosition().X();
