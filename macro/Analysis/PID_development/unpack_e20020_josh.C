@@ -17,14 +17,14 @@ std::vector<const AtHit *> SelectHitsForFit(const std::vector<const AtHit *> &hi
    double radius = 200.0;
    int maxHits = 0;
    int minpoints = 250;
-   
+
    // pick the first point as the circle's center
    double xCenter = hits2[0]->GetPosition().X();
    double yCenter = hits2[0]->GetPosition().Y();
 
    for (int i = 0; i < hits.size(); i++) {
 
-      //Reuse x & y from rad fit
+      // Reuse x & y from rad fit
       double x = hits2.at(i)->GetPosition().X();
       double y = hits2.at(i)->GetPosition().Y();
 
@@ -53,10 +53,8 @@ std::vector<const AtHit *> SelectHitsForFit(const std::vector<const AtHit *> &hi
                 << " and z = " << hits2.at(i)->GetPosition().Z() << std::endl;
    }
 
-
    return hitsToFit;
 }
-
 
 void unpack_e20020_josh(TString fileName = "run_0053")
 {
@@ -135,13 +133,12 @@ void unpack_e20020_josh(TString fileName = "run_0053")
    pra->SetTcluster(8);
    pra->SetMaxHits(3000);
    pra->SetMinHits(200);
+   pra->SetClusterRadius(10);
+   pra->SetClusterDistance(5.5);
    pra->SetPruneHitsForFit(SelectHitsForFit);
 
    AtPRAtask *praTask = new AtPRAtask(pra);
    praTask->SetPersistence(kTRUE);
-   praTask->SetMaxNumHits(3000);
-   praTask->SetMinNumHits(200);
-   praTask->SetTcluster(8.0);
 
    run->AddTask(unpackTask);
    run->AddTask(filterTask);
@@ -156,8 +153,8 @@ void unpack_e20020_josh(TString fileName = "run_0053")
    auto numEvents = unpackTask->GetNumEvents();
    std::cout << "Unpacking " << numEvents << " events. " << std::endl;
 
-   //run->Run(0, 5);
-   run->Run(0, 3500);
+   // run->Run(0, 5);
+   run->Run(0, 50);
 
    std::cout << std::endl << std::endl;
    std::cout << "Done unpacking events" << std::endl << std::endl;
